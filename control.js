@@ -51,6 +51,8 @@
         keyboardToggleMouse: document.getElementById("keyboard-toggle-mouse"),
         keyboardToggle: document.getElementById("keyboard-toggle"),
         keyboardClose: document.getElementById("keyboard-close"),
+        virtualMouseMinimize: document.getElementById("virtual-mouse-minimize"),
+        virtualMouseRestore: document.getElementById("virtual-mouse-restore"),
       };
 
       this.virtualKeyTimers = new Map(); // Store timers for each key element
@@ -89,6 +91,7 @@
         initialTranslateY: 0,
         currentTranslateX: 0,
         currentTranslateY: 0,
+        virtualMouseMinimized: false,
       };
 
       this.onPointerLockChange = this.onPointerLockChange.bind(this);
@@ -672,7 +675,16 @@
         if (this.elements.mobileModeSelector) {
           this.elements.mobileModeSelector.style.display = "none";
         }
+        // Hide minimize button on desktop
+        if (this.elements.virtualMouseMinimize) {
+          this.elements.virtualMouseMinimize.style.display = "none";
+        }
         return;
+      }
+      
+      // Show minimize button on mobile
+      if (this.elements.virtualMouseMinimize) {
+        this.elements.virtualMouseMinimize.style.display = "flex";
       }
 
       // 显示移动端模式选择器
@@ -734,6 +746,21 @@
 
       this.bindVirtualMouseDragging();
       this.bindVirtualKeyboardDragging();
+      
+      // Bind minimize/restore buttons
+      if (this.elements.virtualMouseMinimize) {
+        this.elements.virtualMouseMinimize.addEventListener("click", (e) => {
+          e.stopPropagation();
+          this.minimizeVirtualMouse();
+        });
+      }
+      
+      if (this.elements.virtualMouseRestore) {
+        this.elements.virtualMouseRestore.addEventListener("click", (e) => {
+          e.stopPropagation();
+          this.restoreVirtualMouse();
+        });
+      }
 
       // Add pinch zoom support for mobile devices (after isMobile is set)
       if (this.state.isMobile && this.elements.video) {
@@ -1114,6 +1141,16 @@
           e.stopPropagation();
         });
       }
+      
+      // 确保缩小按钮点击时不会触发拖动
+      if (this.elements.virtualMouseMinimize) {
+        this.elements.virtualMouseMinimize.addEventListener("touchstart", (e) => {
+          e.stopPropagation();
+        });
+        this.elements.virtualMouseMinimize.addEventListener("click", (e) => {
+          e.stopPropagation();
+        });
+      }
     }
 
     bindVirtualKeyboardDragging() {
@@ -1150,7 +1187,12 @@
       
       // 检查是否点击在按钮上
       const target = event.target;
-      if (target && (target.id === "keyboard-toggle-mouse" || target.closest("#keyboard-toggle-mouse"))) {
+      if (target && (
+        target.id === "keyboard-toggle-mouse" || 
+        target.closest("#keyboard-toggle-mouse") ||
+        target.id === "virtual-mouse-minimize" ||
+        target.closest("#virtual-mouse-minimize")
+      )) {
         return; // 不触发拖动
       }
       
@@ -1475,6 +1517,43 @@
         this.state.initialPinchCenter = null;
         // Don't prevent default for single touch after pinch ends
         // This allows normal touch handling to resume
+      }
+    }
+
+    minimizeVirtualMouse() {
+      if (!this.elements.virtualMouse || this.state.virtualMouseMinimized) return;
+      
+      this.state.virtualMouseMinimized = true;
+      this.elements.virtualMouse.classList.add("minimized-to-statusbar");
+      this.elements.virtualMouse.style.display = "none";
+      
+      // Show restore button in status bar
+      if (this.elements.virtualMouseRestore) {
+        this.elements.virtualMouseRestore.style.display = "inline-flex";
+        // Position relative to connection status group
+        const statusGroup = document.querySelector(".connection-status-group");
+        if (statusGroup && this.elements.virtualMouseRestore.parentElement) {
+          const statusGroupRect = statusGroup.getBoundingClientRect();
+          const parentRect = this.elements.virtualMouseRestore.parentElement.getBoundingClientRect();
+          const leftOffset = statusGroupRect.left - parentRect.left - 48; // 36px button + 12px gap
+          this.elements.virtualMouseRestore.style.left = `${leftOffset}px`;
+          this.elements.virtualMouseRestore.style.right = "auto";
+          this.elements.virtualMouseRestore.style.top = "0";
+          this.elements.virtualMouseRestore.style.transform = "none";
+        }
+      }
+    }
+    
+    restoreVirtualMouse() {
+      if (!this.elements.virtualMouse || !this.state.virtualMouseMinimized) return;
+      
+      this.state.virtualMouseMinimized = false;
+      this.elements.virtualMouse.classList.remove("minimized-to-statusbar");
+      this.elements.virtualMouse.style.display = "flex";
+      
+      // Hide restore button in status bar
+      if (this.elements.virtualMouseRestore) {
+        this.elements.virtualMouseRestore.style.display = "none";
       }
     }
 

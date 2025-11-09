@@ -685,6 +685,7 @@ video {
 .connected-controls-row .connection-status-group {
   flex-shrink: 0;
   margin: 0;
+  position: relative;
 }
 
 .connected-controls-row .disconnect-btn {
@@ -733,6 +734,7 @@ video {
   box-sizing: border-box;
   min-width: auto;
   justify-content: center;
+  position: relative;
 }
 
 .connection-status-label {
@@ -853,6 +855,84 @@ video {
   user-select: none;
   touch-action: none;
   gap: max(4px, 0.6vw);
+}
+
+.virtual-mouse-minimize-btn {
+  padding: 0;
+  background-color: rgba(255, 255, 255, 0.48);
+  color: #222;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: max(4px, 0.6vw);
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  user-select: none;
+  touch-action: manipulation;
+  transition: all 0.1s;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  box-sizing: border-box;
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.virtual-mouse-minimize-btn:active {
+  background-color: rgba(200, 200, 200, 0.65) !important;
+  transform: scale(0.92);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.virtual-mouse-minimize-btn:focus {
+  outline: none !important;
+  background-color: rgba(255, 255, 255, 0.48) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08) !important;
+}
+
+.virtual-mouse-restore-btn {
+  padding: 0;
+  background-color: rgba(255, 255, 255, 0.6);
+  color: #222;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 500;
+  height: 36px;
+  width: 36px;
+  min-width: 36px;
+  transition: background-color 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  position: absolute;
+  top: 0;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.virtual-mouse-restore-btn:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.virtual-mouse-restore-btn:active {
+  background-color: rgba(200, 200, 200, 0.8);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+#virtual-mouse.minimized-to-statusbar {
+  display: none !important;
 }
 
 .virtual-mouse-row {

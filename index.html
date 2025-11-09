@@ -121,6 +121,15 @@
                     </div>
                     <!-- Right side group: status and buttons -->
                     <div class="controls-right-group">
+                      <!-- Virtual mouse restore button (shown when minimized) -->
+                      <button
+                        id="virtual-mouse-restore"
+                        class="virtual-mouse-restore-btn"
+                        style="display: none"
+                        title="显示虚拟鼠标"
+                      >
+                        🖱
+                      </button>
                       <!-- Connection status -->
                       <div class="connection-status-group">
                         <span class="connection-status-label">连接状态</span>
@@ -149,6 +158,7 @@
           <div id="virtual-mouse">
             <div id="virtual-mouse-header" class="virtual-mouse-header">
               <button id="keyboard-toggle-mouse" class="keyboard-toggle-btn">⌨</button>
+              <button id="virtual-mouse-minimize" class="virtual-mouse-minimize-btn">−</button>
             </div>
             <div class="virtual-mouse-row">
               <button id="virtual-left-btn" class="virtual-mouse-btn">
